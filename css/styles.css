@@ -1,0 +1,374 @@
+/* ==========================================================================
+   aidan coughlin — portfolio
+   Plain CSS, no build step. Sections:
+   1. Tokens  2. Base  3. Header  4. Landing hero  5. Project cards
+   6. Card illustrations  7. Footer  8. Inner pages  9. Responsive  10. Motion
+   ========================================================================== */
+
+/* 0. Fonts (self-hosted Courier Prime, SIL Open Font License) --------------- */
+@font-face {
+  font-family: "Courier Prime"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("../assets/fonts/courier-prime-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Courier Prime"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("../assets/fonts/courier-prime-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Courier Prime"; font-style: italic; font-weight: 400; font-display: swap;
+  src: url("../assets/fonts/courier-prime-latin-400-italic.woff2") format("woff2");
+}
+
+/* 1. Tokens ---------------------------------------------------------------- */
+:root {
+  --ink: #111;
+  --muted: #6b6b6b;
+  --soft: #f5f5f3;
+  --hairline: #d6d6d2;
+  --link: #1a6fe0;
+  --live: #2f9e44;
+  --alert: #d9480f;
+
+  --font: "Courier Prime", "Courier New", Courier, monospace;
+  --header-h: 64px;
+  --pad-x: clamp(16px, 4vw, 48px);
+  --content-w: 1120px;
+  --radius: 12px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* 2. Base ------------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg { display: block; max-width: 100%; }
+
+a { color: inherit; }
+
+:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 4px; }
+
+.skip-link {
+  position: absolute; left: 12px; top: -48px; z-index: 100;
+  background: var(--ink); color: #fff; padding: 8px 12px; border-radius: 6px;
+  text-decoration: none; transition: top .2s;
+}
+.skip-link:focus { top: 12px; }
+
+/* text link inside paragraphs: blue + underline, as on the old site */
+.text-link {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness .15s, text-underline-offset .15s;
+}
+.text-link:hover { text-decoration-thickness: 2px; text-underline-offset: 4px; }
+
+/* nav-style link: underline slides in from the left on hover */
+.nav-link {
+  text-decoration: none;
+  font-weight: 700;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0% 1.5px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size .25s var(--ease);
+}
+.nav-link:hover, .nav-link:focus-visible { background-size: 100% 1.5px; }
+
+/* 3. Header ---------------------------------------------------------------- */
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 0 var(--pad-x);
+  background: rgba(255, 255, 255, .92);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 2px solid var(--ink);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand-name { text-decoration: none; font-size: 1.05rem; white-space: nowrap; }
+
+.icon-link { display: inline-flex; width: 22px; height: 22px; color: var(--ink); transition: color .2s, transform .2s var(--ease); }
+.icon-link svg { width: 100%; height: 100%; }
+.icon-link:hover { color: #0a66c2; transform: translateY(-1px); }
+
+.site-nav { display: flex; align-items: center; gap: clamp(16px, 4vw, 64px); font-size: 1rem; }
+
+.btn-resume {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--ink); color: #fff;
+  font-weight: 700; text-decoration: none;
+  padding: 7px 16px 7px 13px; border-radius: 999px;
+  border: 2px solid var(--ink);
+  transition: background-color .2s, color .2s, transform .2s var(--ease);
+}
+.btn-resume svg { width: 16px; height: 16px; }
+.btn-resume .dl-arrow { transition: transform .25s var(--ease); }
+.btn-resume:hover { background: #fff; color: var(--ink); }
+.btn-resume:hover .dl-arrow { transform: translateY(2px); }
+.btn-resume:active { transform: scale(.97); }
+
+/* 4. Landing hero ---------------------------------------------------------- */
+/* The first screen holds the intro (centered in the free space) and the
+   project cards (pinned toward the bottom), so work is visible on load. */
+.hero {
+  width: min(var(--content-w), 100%);
+  margin: 0 auto;
+  min-height: calc(100svh - var(--header-h));
+  display: flex; flex-direction: column;
+  gap: clamp(24px, 4vh, 48px);
+  padding: clamp(20px, 4vh, 56px) var(--pad-x) clamp(24px, 5vh, 56px);
+}
+
+.intro {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(20px, 4vw, 56px);
+}
+
+.portrait { flex: none; }
+.portrait img {
+  height: clamp(150px, 30vh, 290px);
+  width: auto;
+  transition: transform .5s var(--ease);
+  transform-origin: 50% 90%;
+}
+.portrait:hover img { transform: rotate(-2deg); }
+
+.bio { max-width: 60ch; }
+.bio h1 {
+  font-size: clamp(1.05rem, .95rem + .45vw, 1.3rem);
+  line-height: 1.55;
+  font-weight: 700;
+  margin: 0 0 .8em;
+}
+.bio p { margin: 0; font-size: clamp(.94rem, .9rem + .15vw, 1rem); }
+
+.status {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .82rem !important; color: var(--muted);
+  margin-bottom: 1em !important;
+}
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--live);
+  box-shadow: 0 0 0 0 rgba(47, 158, 68, .45);
+  animation: pulse 2.4s infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(47, 158, 68, .45); }
+  70%  { box-shadow: 0 0 0 7px rgba(47, 158, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(47, 158, 68, 0); }
+}
+
+/* 5. Project cards --------------------------------------------------------- */
+.section-label {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 14px;
+  font-size: .85rem; font-weight: 400; color: var(--muted);
+}
+.section-label::after { content: ""; flex: 1; height: 1px; background: var(--hairline); }
+.section-label .count { margin-left: -6px; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 2.5vw, 28px);
+}
+
+.card {
+  display: flex; flex-direction: column;
+  background: #fff;
+  border: 1.5px solid var(--ink);
+  overflow: hidden;
+  text-decoration: none; color: inherit;
+  transition: transform .25s var(--ease);
+}
+.card:hover, .card:focus-visible { transform: translateY(-3px); }
+.card:focus-visible { outline-offset: 4px; border-radius: 0; }
+.card:active { transform: translateY(-1px); }
+
+.card-visual {
+  height: clamp(92px, 15vh, 150px);
+  background: var(--soft);
+  border-bottom: 1.5px solid var(--ink);
+  display: grid; place-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-body { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 14px 18px 16px; }
+
+.card-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); }
+
+.pill { border: 1px solid var(--hairline); border-radius: 999px; padding: 0 8px; white-space: nowrap; }
+.pill--live { border-color: var(--live); color: var(--live); }
+
+.card-title { margin: 0; font-size: clamp(1.1rem, 1rem + .4vw, 1.3rem); line-height: 1.3; }
+.card-desc { margin: 0; font-size: .9rem; line-height: 1.5; color: #333; }
+
+.card-foot {
+  margin-top: auto; padding-top: 8px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;
+  font-size: .78rem;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; color: var(--muted); }
+.tags li { border: 1px solid var(--hairline); border-radius: 999px; padding: 0 8px; }
+
+.card-cta { font-weight: 700; white-space: nowrap; }
+.card-cta .arrow { display: inline-block; transition: transform .25s var(--ease); }
+.card:hover .card-cta .arrow, .card:focus-visible .card-cta .arrow { transform: translateX(4px); }
+
+/* 6. Card illustrations ---------------------------------------------------- */
+/* Hover (or .is-active on touch devices, set by js/main.js) plays a tiny
+   story: chat noise collapses into one plan / a message's path is traced. */
+
+/* imin: wall of text -> one plan */
+.viz-imin { display: flex; align-items: center; gap: 16px; }
+.viz-imin .chat { width: 140px; display: flex; flex-direction: column; gap: 4px; }
+.viz-imin .b {
+  width: var(--w); height: 7px; border-radius: 4px;
+  background: #cfcfcb;
+  transform-origin: right center;
+  transition: transform .4s var(--ease), opacity .4s;
+  transition-delay: calc(var(--i) * 30ms);
+}
+.viz-imin .b.me { align-self: flex-end; background: #a3a39f; }
+.viz-imin .viz-arrow { color: var(--muted); transition: transform .4s var(--ease), color .3s; }
+.viz-imin .plan {
+  width: 136px;
+  display: flex; flex-direction: column;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1.5px solid var(--ink); border-radius: 9px;
+  font-size: 11px; line-height: 1.4;
+  opacity: .6; transform: scale(.92);
+  transition: transform .4s var(--ease) .1s, opacity .4s .1s, box-shadow .4s .1s;
+}
+.plan-when { color: var(--muted); }
+.plan-what { font-weight: 700; }
+.plan-who { display: flex; align-items: center; gap: 6px; color: var(--live); font-weight: 700; }
+.avatars { display: inline-flex; }
+.avatars i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid #fff; margin-left: -3px; background: #bbb; }
+.avatars i:nth-child(1) { margin-left: 0; background: #e8a87c; }
+.avatars i:nth-child(2) { background: #7da7d9; }
+.avatars i:nth-child(3) { background: #9fc58f; }
+.avatars i:nth-child(4) { background: #c49bd6; }
+
+.card:hover .viz-imin .b, .card:focus-visible .viz-imin .b, .card.is-active .viz-imin .b { transform: scaleX(.18); opacity: .3; }
+.card:hover .viz-imin .viz-arrow, .card:focus-visible .viz-imin .viz-arrow, .card.is-active .viz-imin .viz-arrow { transform: translateX(3px); color: var(--ink); }
+.card:hover .viz-imin .plan, .card:focus-visible .viz-imin .plan, .card.is-active .viz-imin .plan { opacity: 1; transform: scale(1.04); box-shadow: 3px 3px 0 var(--ink); }
+
+/* ROTC: information-flow diagram */
+.viz-rotc { position: absolute; inset: 8px 4%; width: 92%; height: calc(100% - 16px); overflow: visible; }
+.viz-rotc .edges path { fill: none; stroke: #c4c4c0; stroke-width: 1.2; }
+.viz-rotc .trace {
+  fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  transition: stroke-dashoffset .9s var(--ease);
+}
+.viz-rotc .nodes rect { fill: #fff; stroke: var(--ink); stroke-width: 1.4; }
+.viz-rotc .nodes > circle { fill: #fff; stroke: var(--ink); stroke-width: 1.4; transition: fill .3s .35s; }
+.viz-rotc .flights circle { fill: var(--ink); }
+.viz-rotc text { font-family: var(--font); font-size: 11px; text-anchor: middle; fill: var(--ink); }
+.viz-rotc text.lbl { font-size: 10px; fill: var(--muted); }
+.viz-rotc .pain { fill: none !important; stroke: var(--alert) !important; stroke-width: 1.4; opacity: 0; transform-origin: 120px 90px; transition: opacity .3s; }
+
+.card:hover .viz-rotc .trace, .card:focus-visible .viz-rotc .trace, .card.is-active .viz-rotc .trace { stroke-dashoffset: 0; }
+.card:hover .viz-rotc .hit, .card:focus-visible .viz-rotc .hit, .card.is-active .viz-rotc .hit { fill: var(--ink); }
+.card:hover .viz-rotc .pain, .card:focus-visible .viz-rotc .pain, .card.is-active .viz-rotc .pain { opacity: 1; animation: ring 1.6s .5s infinite; }
+@keyframes ring { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+
+/* 7. Footer ---------------------------------------------------------------- */
+.site-footer {
+  width: min(var(--content-w), 100%);
+  margin: 0 auto;
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px;
+  padding: 20px var(--pad-x) 28px;
+  border-top: 1px solid var(--hairline);
+  font-size: .82rem; color: var(--muted);
+}
+.footer-links { display: flex; gap: 20px; }
+.footer-links .nav-link { color: var(--ink); font-weight: 400; }
+
+/* 8. Inner pages (about + case studies) ------------------------------------ */
+.page {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: clamp(32px, 7vh, 80px) var(--pad-x) 64px;
+}
+.back-link { display: inline-block; font-size: .9rem; margin-bottom: 28px; }
+
+.page h1 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.3rem); line-height: 1.2; margin: 0 0 12px; }
+.page h2 { font-size: 1.15rem; margin: 48px 0 10px; }
+.page p, .page li { font-size: 1rem; }
+.page .lede { font-size: 1.1rem; color: #333; margin-top: 0; }
+
+.summary {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px 24px;
+  margin: 32px 0 8px; padding: 20px;
+  border: 1.5px solid var(--ink); border-radius: var(--radius);
+  font-size: .9rem;
+}
+.summary dt { color: var(--muted); font-size: .78rem; }
+.summary dd { margin: 2px 0 0; font-weight: 700; }
+
+.placeholder {
+  margin: 8px 0 0; padding: 14px 16px;
+  background: var(--soft); border: 1px dashed var(--hairline); border-radius: 8px;
+  color: var(--muted); font-size: .9rem;
+}
+
+.about-grid { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 5vw, 56px); align-items: start; }
+.about-grid img { height: clamp(200px, 40vh, 380px); width: auto; }
+.about-grid p { margin: 0 0 1em; }
+
+/* 9. Responsive ------------------------------------------------------------ */
+/* Short laptop screens: tighten so intro + cards still fit in one view */
+@media (min-width: 761px) and (max-height: 800px) {
+  .portrait img { height: clamp(140px, 27vh, 220px); }
+  .card-desc { font-size: .85rem; }
+}
+
+@media (max-width: 760px) {
+  :root { --header-h: 56px; }
+
+  .hero { min-height: 0; gap: 36px; }
+  .intro { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .portrait img { height: 150px; }
+  .cards { grid-template-columns: 1fr; }
+  .card-visual { height: 120px; }
+
+  .about-grid { grid-template-columns: 1fr; }
+  .about-grid img { height: 200px; }
+}
+
+@media (max-width: 420px) {
+  .site-nav { gap: 14px; font-size: .92rem; }
+  .brand { gap: 8px; }
+  .brand-name { font-size: .95rem; }
+  .nav-works { display: none; }          /* work sits directly below on this page */
+  .btn-resume { padding: 5px 12px 5px 10px; }
+}
+
+/* 10. Motion preferences --------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0s !important;
+  }
+}
