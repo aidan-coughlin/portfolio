@@ -5,6 +5,15 @@ document.querySelectorAll("[data-year]").forEach((el) => {
   el.textContent = new Date().getFullYear();
 });
 
+// Portrait tilts away from the side the cursor enters on:
+// enter from the left -> tilt right, enter from the right -> tilt left.
+document.querySelectorAll(".portrait").forEach((portrait) => {
+  portrait.addEventListener("mouseenter", (e) => {
+    const box = portrait.getBoundingClientRect();
+    portrait.dataset.tilt = e.clientX < box.left + box.width / 2 ? "right" : "left";
+  });
+});
+
 // Phones and tablets have no hover, so play each card's little illustration
 // once the card scrolls into view instead.
 const noHover = window.matchMedia("(hover: none)").matches;

@@ -4,6 +4,6 @@ Source code for my design portfolio. I'm an Information Science student at CU Bo
 
 **View the site:** https://aidan-coughlin.github.io/portfolio/
 
-Hand-coded in plain HTML, CSS and JavaScript, with no framework and no build step.
+Designed by me, built in plain HTML, CSS and JavaScript, with no framework and no build step.
 
 [LinkedIn](https://www.linkedin.com/in/aidan-coughlin/)

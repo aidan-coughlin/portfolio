@@ -33,7 +33,6 @@
   --header-h: 64px;
   --pad-x: clamp(16px, 4vw, 48px);
   --content-w: 1120px;
-  --radius: 12px;
   --ease: cubic-bezier(.2, .7, .2, 1);
 }
 
@@ -56,11 +55,12 @@ img, svg { display: block; max-width: 100%; }
 
 a { color: inherit; }
 
-:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 4px; }
+/* Two radii only: rectangles are square; pills and dots are fully round. */
+:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
 
 .skip-link {
   position: absolute; left: 12px; top: -48px; z-index: 100;
-  background: var(--ink); color: #fff; padding: 8px 12px; border-radius: 6px;
+  background: var(--ink); color: #fff; padding: 8px 12px;
   text-decoration: none; transition: top .2s;
 }
 .skip-link:focus { top: 12px; }
@@ -91,18 +91,16 @@ a { color: inherit; }
   height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding: 0 var(--pad-x);
-  background: rgba(255, 255, 255, .92);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: #fff;
   border-bottom: 2px solid var(--ink);
 }
 
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .brand-name { text-decoration: none; font-size: 1.05rem; white-space: nowrap; }
 
-.icon-link { display: inline-flex; width: 22px; height: 22px; color: var(--ink); transition: color .2s, transform .2s var(--ease); }
+.icon-link { display: inline-flex; width: 22px; height: 22px; color: var(--ink); transition: color .2s; }
 .icon-link svg { width: 100%; height: 100%; }
-.icon-link:hover { color: #0a66c2; transform: translateY(-1px); }
+.icon-link:hover { color: #0a66c2; } /* LinkedIn brand blue */
 
 .site-nav { display: flex; align-items: center; gap: clamp(16px, 4vw, 64px); font-size: 1rem; }
 
@@ -112,13 +110,12 @@ a { color: inherit; }
   font-weight: 700; text-decoration: none;
   padding: 7px 16px 7px 13px; border-radius: 999px;
   border: 2px solid var(--ink);
-  transition: background-color .2s, color .2s, transform .2s var(--ease);
+  transition: background-color .2s, color .2s;
 }
 .btn-resume svg { width: 16px; height: 16px; }
 .btn-resume .dl-arrow { transition: transform .25s var(--ease); }
 .btn-resume:hover { background: #fff; color: var(--ink); }
 .btn-resume:hover .dl-arrow { transform: translateY(2px); }
-.btn-resume:active { transform: scale(.97); }
 
 /* 4. Landing hero ---------------------------------------------------------- */
 /* The first screen holds the intro (centered in the free space) and the
@@ -145,7 +142,10 @@ a { color: inherit; }
   transition: transform .5s var(--ease);
   transform-origin: 50% 90%;
 }
+/* Tilts away from the side the cursor enters on; js/main.js sets data-tilt.
+   Without JS it falls back to a left tilt. */
 .portrait:hover img { transform: rotate(-2deg); }
+.portrait[data-tilt="right"]:hover img { transform: rotate(2deg); }
 
 .bio { max-width: 60ch; }
 .bio h1 {
@@ -164,13 +164,6 @@ a { color: inherit; }
 .status-dot {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--live);
-  box-shadow: 0 0 0 0 rgba(47, 158, 68, .45);
-  animation: pulse 2.4s infinite;
-}
-@keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(47, 158, 68, .45); }
-  70%  { box-shadow: 0 0 0 7px rgba(47, 158, 68, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(47, 158, 68, 0); }
 }
 
 /* 5. Project cards --------------------------------------------------------- */
@@ -197,7 +190,7 @@ a { color: inherit; }
   transition: transform .25s var(--ease);
 }
 .card:hover, .card:focus-visible { transform: translateY(-3px); }
-.card:focus-visible { outline-offset: 4px; border-radius: 0; }
+.card:focus-visible { outline-offset: 4px; }
 .card:active { transform: translateY(-1px); }
 
 .card-visual {
@@ -239,7 +232,7 @@ a { color: inherit; }
 .viz-imin { display: flex; align-items: center; gap: 16px; }
 .viz-imin .chat { width: 140px; display: flex; flex-direction: column; gap: 4px; }
 .viz-imin .b {
-  width: var(--w); height: 7px; border-radius: 4px;
+  width: var(--w); height: 7px; border-radius: 999px;
   background: #cfcfcb;
   transform-origin: right center;
   transition: transform .4s var(--ease), opacity .4s;
@@ -252,7 +245,7 @@ a { color: inherit; }
   display: flex; flex-direction: column;
   padding: 8px 10px;
   background: #fff;
-  border: 1.5px solid var(--ink); border-radius: 9px;
+  border: 1.5px solid var(--ink);
   font-size: 11px; line-height: 1.4;
   opacity: .6; transform: scale(.92);
   transition: transform .4s var(--ease) .1s, opacity .4s .1s, box-shadow .4s .1s;
@@ -288,7 +281,7 @@ a { color: inherit; }
 
 .card:hover .viz-rotc .trace, .card:focus-visible .viz-rotc .trace, .card.is-active .viz-rotc .trace { stroke-dashoffset: 0; }
 .card:hover .viz-rotc .hit, .card:focus-visible .viz-rotc .hit, .card.is-active .viz-rotc .hit { fill: var(--ink); }
-.card:hover .viz-rotc .pain, .card:focus-visible .viz-rotc .pain, .card.is-active .viz-rotc .pain { opacity: 1; animation: ring 1.6s .5s infinite; }
+.card:hover .viz-rotc .pain, .card:focus-visible .viz-rotc .pain, .card.is-active .viz-rotc .pain { opacity: 1; animation: ring 1.6s .5s 2; }
 @keyframes ring { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
 
 /* 7. Footer ---------------------------------------------------------------- */
@@ -319,7 +312,7 @@ a { color: inherit; }
 .summary {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px 24px;
   margin: 32px 0 8px; padding: 20px;
-  border: 1.5px solid var(--ink); border-radius: var(--radius);
+  border: 1.5px solid var(--ink);
   font-size: .9rem;
 }
 .summary dt { color: var(--muted); font-size: .78rem; }
@@ -327,7 +320,7 @@ a { color: inherit; }
 
 .placeholder {
   margin: 8px 0 0; padding: 14px 16px;
-  background: var(--soft); border: 1px dashed var(--hairline); border-radius: 8px;
+  background: var(--soft); border: 1px dashed var(--hairline);
   color: var(--muted); font-size: .9rem;
 }
 
